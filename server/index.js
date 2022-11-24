@@ -38,9 +38,17 @@ const dbConnect = async () => {
 dbConnect();
 
 //* Collections
+const productCategoriesCollection = client
+  .db('homeTechDB')
+  .collection('productCategories');
 const usersCollection = client.db('homeTechDB').collection('users');
 
 //* -------------------------GET(READ)-------------------------
+app.get('/categories', async (req, res) => {
+  const query = {};
+  const categories = await productCategoriesCollection.find(query).toArray();
+  res.send(categories);
+});
 
 //* -------------------------POST(CREATE)-------------------------
 app.post('/users', async (req, res) => {
