@@ -41,13 +41,29 @@ dbConnect();
 const productCategoriesCollection = client
   .db('homeTechDB')
   .collection('productCategories');
+const productsCollection = client.db('homeTechDB').collection('products');
 const usersCollection = client.db('homeTechDB').collection('users');
 
 //* -------------------------GET(READ)-------------------------
 app.get('/categories', async (req, res) => {
-  const query = {};
-  const categories = await productCategoriesCollection.find(query).toArray();
-  res.send(categories);
+  try {
+    const query = {};
+    const categories = await productCategoriesCollection.find(query).toArray();
+    res.send(categories);
+  } catch (error) {
+    console.log(error.message.bold);
+  }
+});
+
+app.get('/categories/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const query = { categoryId: Number(id) };
+    const result = await productsCollection.find(query).toArray();
+    res.send(result);
+  } catch (error) {
+    console.log(error.message.bold);
+  }
 });
 
 //* -------------------------POST(CREATE)-------------------------
