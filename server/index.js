@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
+const { MongoClient, ServerApiVersion } = require('mongodb');
 require('colors');
 require('dotenv').config();
 
@@ -14,6 +15,39 @@ app.use(express.json());
 
 app.get('/', (req, res) => {
   res.send('HomeTech server is running');
+});
+
+//* Mongodb Atlas
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.yeflywl.mongodb.net/?retryWrites=true&w=majority`;
+
+const client = new MongoClient(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverApi: ServerApiVersion.v1,
+});
+
+const dbConnect = async () => {
+  try {
+    await client.connect();
+    console.log('Database connected'.yellow.italic);
+  } catch (error) {
+    console.log(error.name.bgRed, error.message.bold);
+  }
+};
+
+dbConnect();
+
+//* Collections
+const usersCollection = client.db('homeTechDB').collection('users');
+
+//* -------------------------GET(READ)-------------------------
+
+//* -------------------------POST(CREATE)-------------------------
+app.post('/users', async (req, res) => {
+  const user = req.body;
+  const result = await usersCollection.insertOne(user);
+  res.send(result);
+  console.log(result);
 });
 
 app.listen(port, () => {
