@@ -46,6 +46,7 @@ const usersCollection = client.db('homeTechDB').collection('users');
 const bookingsCollection = client.db('homeTechDB').collection('bookings');
 
 //* -------------------------GET(READ)-------------------------
+// get all categories
 app.get('/categories', async (req, res) => {
   try {
     const query = {};
@@ -56,6 +57,7 @@ app.get('/categories', async (req, res) => {
   }
 });
 
+// Get specific category products
 app.get('/categories/:id', async (req, res) => {
   try {
     const id = req.params.id;
@@ -67,14 +69,32 @@ app.get('/categories/:id', async (req, res) => {
   }
 });
 
-//* -------------------------POST(CREATE)-------------------------
-app.post('/users', async (req, res) => {
-  const user = req.body;
-  const result = await usersCollection.insertOne(user);
-  res.send(result);
-  console.log(result);
+// Get a specific user
+app.get('/users/:email', async (req, res) => {
+  try {
+    const email = req.params.email;
+    const query = { email: email };
+    const user = await usersCollection.findOne(query);
+    res.send(user);
+    console.log(user);
+  } catch (error) {
+    console.log(error.message.bold);
+  }
 });
 
+//* -------------------------POST(CREATE)-------------------------
+// Save registered user information in the database
+app.post('/users', async (req, res) => {
+  try {
+    const user = req.body;
+    const result = await usersCollection.insertOne(user);
+    res.send(result);
+  } catch (error) {
+    console.log(error.message.bold);
+  }
+});
+
+// Insert booking data
 app.post('/bookings', async (req, res) => {
   try {
     const booking = req.body;
@@ -100,6 +120,25 @@ app.post('/bookings', async (req, res) => {
     console.log(error.message.bold);
   }
 });
+
+//* --------------------PUT/PATCH(UPDATE)-----------------------
+// update a specific user information. Give him a Seller role
+app.put('/users/seller/:email', async (req, res) => {
+  const email = req.params.email;
+  const filter = {
+    email: email,
+  };
+  const options = { upsert: true };
+  const updatedUser = {
+    $set: {
+      role: 'Seller',
+    },
+  };
+  const result = await usersCollection.updateOne(filter, updatedUser, options);
+  res.send(result);
+});
+
+//* -------------------------DELETE(DELETE)-------------------------
 
 app.listen(port, () => {
   console.log('Server up and running'.cyan.bold);
