@@ -93,6 +93,30 @@ app.get('/orders', async (req, res) => {
   }
 });
 
+// check if a specific user is an Admin or Not? (using dynamic email)
+app.get('/users/admin/:email', async (req, res) => {
+  try {
+    const email = req.params.email;
+    const query = { email: email };
+    const user = await usersCollection.findOne(query);
+    res.send({ isAdmin: user?.role === 'Admin' });
+  } catch (error) {
+    console.log(error.message.bold);
+  }
+});
+
+// check if a specific user is a Seller or Not? (using dynamic email)
+app.get('/users/seller/:email', async (req, res) => {
+  try {
+    const email = req.params.email;
+    const query = { email: email };
+    const user = await usersCollection.findOne(query);
+    res.send({ isSeller: user?.role === 'Seller' });
+  } catch (error) {
+    console.log(error.message.bold);
+  }
+});
+
 //* -------------------------POST(CREATE)-------------------------
 // Save registered user information in the database
 app.post('/users', async (req, res) => {
