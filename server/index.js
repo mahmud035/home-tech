@@ -78,6 +78,22 @@ app.post('/users', async (req, res) => {
 app.post('/bookings', async (req, res) => {
   try {
     const booking = req.body;
+
+    const query = {
+      userEmail: booking.userEmail,
+      productName: booking.productName,
+    };
+
+    const alreadyBooked = await bookingsCollection.find(query).toArray();
+
+    if (alreadyBooked.length > 0) {
+      const message = 'You have already booked this product.';
+      return res.send({
+        acknowledged: false,
+        message: message,
+      });
+    }
+
     const result = await bookingsCollection.insertOne(booking);
     res.send(result);
   } catch (error) {
