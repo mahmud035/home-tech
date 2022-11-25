@@ -76,7 +76,18 @@ app.get('/users/:email', async (req, res) => {
     const query = { email: email };
     const user = await usersCollection.findOne(query);
     res.send(user);
-    console.log(user);
+  } catch (error) {
+    console.log(error.message.bold);
+  }
+});
+
+// get all orders of a specific user using his/her Email address
+app.get('/orders', async (req, res) => {
+  try {
+    const email = req.query.email;
+    const query = { userEmail: email };
+    const orders = await bookingsCollection.find(query).toArray();
+    res.send(orders);
   } catch (error) {
     console.log(error.message.bold);
   }
