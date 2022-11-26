@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('colors');
 require('dotenv').config();
 
@@ -120,6 +120,20 @@ app.get('/users/seller/:email', async (req, res) => {
   }
 });
 
+// get specific Seller All Products
+app.get('/seller/products', async (req, res) => {
+  try {
+    const email = req.query.email;
+    const query = {
+      email: email,
+    };
+    const products = await sellerProductsCollection.find(query).toArray();
+    res.send(products);
+  } catch (error) {
+    console.log(error.message.bold);
+  }
+});
+
 //* -------------------------POST(CREATE)-------------------------
 // Save registered user information in the database
 app.post('/users', async (req, res) => {
@@ -188,6 +202,17 @@ app.put('/users/seller/:email', async (req, res) => {
 });
 
 //* -------------------------DELETE(DELETE)-------------------------
+// delete a seller product
+app.delete('/seller/products/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const query = { _id: ObjectId(id) };
+    const result = await sellerProductsCollection.deleteOne(query);
+    res.send(result);
+  } catch (error) {
+    console.log(error.message.bold);
+  }
+});
 
 app.listen(port, () => {
   console.log('Server up and running'.cyan.bold);
