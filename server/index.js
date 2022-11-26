@@ -148,6 +148,17 @@ app.get('/advertiseitems', async (req, res) => {
   }
 });
 
+// get all buyers
+app.get('/buyers', async (req, res) => {
+  try {
+    const query = { role: 'User' };
+    const result = await usersCollection.find(query).toArray();
+    res.send(result);
+  } catch (error) {
+    console.log(error.message.bold);
+  }
+});
+
 // get all Sellers
 app.get('/sellers', async (req, res) => {
   try {
