@@ -170,6 +170,17 @@ app.get('/sellers', async (req, res) => {
   }
 });
 
+// get all reported items
+app.get('/reporteditems', async (req, res) => {
+  try {
+    const query = { reported: true };
+    const result = await productsCollection.find(query).toArray();
+    res.send(result);
+  } catch (error) {
+    console.log(error.message.bold);
+  }
+});
+
 //* -------------------------POST(CREATE)-------------------------
 // Save registered user information in the database
 app.post('/users', async (req, res) => {
@@ -259,6 +270,28 @@ app.put('/seller/products/:id', async (req, res) => {
   }
 });
 
+// reported product
+app.put('/products/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const filter = { _id: ObjectId(id) };
+    const options = { upsert: true };
+    const updatedDoc = {
+      $set: {
+        reported: true,
+      },
+    };
+    const result = await productsCollection.updateOne(
+      filter,
+      updatedDoc,
+      options
+    );
+    res.send(result);
+  } catch (error) {
+    console.log(error.message.bold);
+  }
+});
+
 //* -------------------------DELETE(DELETE)-------------------------
 // delete a seller product
 app.delete('/seller/products/:id', async (req, res) => {
@@ -290,6 +323,18 @@ app.delete('/sellers/:id', async (req, res) => {
     const id = req.params.id;
     const query = { _id: ObjectId(id) };
     const result = await usersCollection.deleteOne(query);
+    res.send(result);
+  } catch (error) {
+    console.log(error.message.bold);
+  }
+});
+
+// delete reported items
+app.delete('/reporteditems/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const query = { _id: ObjectId(id) };
+    const result = await productsCollection.deleteOne(query);
     res.send(result);
   } catch (error) {
     console.log(error.message.bold);
