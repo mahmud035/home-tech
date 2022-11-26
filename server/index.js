@@ -134,6 +134,20 @@ app.get('/seller/products', async (req, res) => {
   }
 });
 
+// get all advertise items
+app.get('/advertiseitems', async (req, res) => {
+  try {
+    const query = {
+      isAdvertise: true,
+      salesStatus: 'available',
+    };
+    const result = await sellerProductsCollection.find(query).toArray();
+    res.send(result);
+  } catch (error) {
+    console.log(error.message.bold);
+  }
+});
+
 //* -------------------------POST(CREATE)-------------------------
 // Save registered user information in the database
 app.post('/users', async (req, res) => {
@@ -199,6 +213,28 @@ app.put('/users/seller/:email', async (req, res) => {
   };
   const result = await usersCollection.updateOne(filter, updatedUser, options);
   res.send(result);
+});
+
+// advertise a specific product
+app.put('/seller/products/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const filter = { _id: ObjectId(id) };
+    const options = { upsert: true };
+    const updatedDoc = {
+      $set: {
+        isAdvertise: true,
+      },
+    };
+    const result = await sellerProductsCollection.updateOne(
+      filter,
+      updatedDoc,
+      options
+    );
+    res.send(result);
+  } catch (error) {
+    console.log(error.message.bold);
+  }
 });
 
 //* -------------------------DELETE(DELETE)-------------------------
