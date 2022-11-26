@@ -272,6 +272,30 @@ app.delete('/seller/products/:id', async (req, res) => {
   }
 });
 
+// delete a buyer / Normal User
+app.delete('/buyers/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const query = { _id: ObjectId(id) };
+    const result = await usersCollection.deleteOne(query);
+    res.send(result);
+  } catch (error) {
+    console.log(error.message.bold);
+  }
+});
+
+// delete a seller
+app.delete('/sellers/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const query = { _id: ObjectId(id) };
+    const result = await usersCollection.deleteOne(query);
+    res.send(result);
+  } catch (error) {
+    console.log(error.message.bold);
+  }
+});
+
 app.listen(port, () => {
   console.log('Server up and running'.cyan.bold);
 });
