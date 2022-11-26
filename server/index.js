@@ -44,6 +44,9 @@ const productCategoriesCollection = client
 const productsCollection = client.db('homeTechDB').collection('products');
 const usersCollection = client.db('homeTechDB').collection('users');
 const bookingsCollection = client.db('homeTechDB').collection('bookings');
+const sellerProductsCollection = client
+  .db('homeTechDB')
+  .collection('sellerProducts');
 
 //* -------------------------GET(READ)-------------------------
 // get all categories
@@ -153,6 +156,17 @@ app.post('/bookings', async (req, res) => {
     res.send(result);
   } catch (error) {
     console.log(error.message.bold);
+  }
+});
+
+// Insert Seller Product
+app.post('/seller/products', async (req, res) => {
+  try {
+    const product = req.body;
+    const result = await sellerProductsCollection.insertOne(product);
+    res.send(result);
+  } catch (error) {
+    console.log(error.message.name);
   }
 });
 
