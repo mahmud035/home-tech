@@ -148,6 +148,17 @@ app.get('/advertiseitems', async (req, res) => {
   }
 });
 
+// get all Sellers
+app.get('/sellers', async (req, res) => {
+  try {
+    const query = { role: 'Seller' };
+    const result = await usersCollection.find(query).toArray();
+    res.send(result);
+  } catch (error) {
+    console.log(error.message.bold);
+  }
+});
+
 //* -------------------------POST(CREATE)-------------------------
 // Save registered user information in the database
 app.post('/users', async (req, res) => {
