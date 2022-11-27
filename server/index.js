@@ -178,7 +178,7 @@ app.get('/reporteditems', async (req, res) => {
   }
 });
 
-// JWT Token {create JWT Token}
+// JWT Token {create JWT Token for Email/Password sign-up and login}
 app.get('/jwt', async (req, res) => {
   const email = req.query.email;
   const query = { email: email };
@@ -191,6 +191,17 @@ app.get('/jwt', async (req, res) => {
   }
 
   res.status(403).send({ accessToken2: '' });
+});
+
+// JWT Token {for Social Login}
+app.post('/jwt', async (req, res) => {
+  try {
+    const user = req.body;
+    const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+    res.send({ accessToken2: token });
+  } catch (error) {
+    console.log(error.message.bold);
+  }
 });
 
 //* -------------------------POST(CREATE)-------------------------
