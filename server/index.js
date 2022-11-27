@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('colors');
 require('dotenv').config();
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 
@@ -65,6 +66,7 @@ const productCategoriesCollection = client
 const productsCollection = client.db('homeTechDB').collection('products');
 const usersCollection = client.db('homeTechDB').collection('users');
 const bookingsCollection = client.db('homeTechDB').collection('bookings');
+const paymentsCollection = client.db('homeTechDB').collection('payments');
 
 //* -------------------------GET(READ)-------------------------
 // get all categories
@@ -291,6 +293,45 @@ app.post('/products', async (req, res) => {
   } catch (error) {
     console.log(error.message.name);
   }
+});
+
+// payment intents API to get client Secret from stripe
+app.post('/create-payment-intent', async (req, res) => {
+  try {
+    const product = req.body;
+    const price = Number(product.resalePrice);
+    const amount = price * 100;
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      currency: 'usd',
+      amount: amount,
+      payment_method_types: ['card'],
+    });
+
+    res.send({
+      clientSecret: paymentIntent.client_secret,
+    });
+  } catch (error) {
+    console.log(error.message.bold);
+  }
+});
+
+app.post('/payments', async (req, res) => {
+  const payment = req.body;
+  const result = await paymentsCollection.insertOne(payment);
+
+  // update booking document (insert two new fields)
+  const id = payment.bookingId;
+  const filter = { _id: ObjectId(id) };
+  const updatedDoc = {
+    $set: {
+      paid: true,
+      transactionId: payment.transactionId,
+    },
+  };
+  const updateResult = await bookingsCollection.updateOne(filter, updatedDoc);
+
+  res.send(result);
 });
 
 //* --------------------PUT/PATCH(UPDATE)-----------------------
