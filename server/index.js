@@ -86,7 +86,8 @@ app.get('/categories/:categoryname', async (req, res) => {
     const categoryName = req.params.categoryname;
     const query = {
       categoryName: categoryName,
-      salesStatus: 'available',
+      // salesStatus: 'available',
+      //BUG pore ei line theke comment remove korte hobe.
     };
     const result = await productsCollection.find(query).toArray();
     res.send(result);
