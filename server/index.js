@@ -292,6 +292,24 @@ app.put('/products/:id', async (req, res) => {
   }
 });
 
+// verify a seller
+app.put('/sellers/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const filter = { _id: ObjectId(id) };
+    const options = { upsert: true };
+    const updatedDoc = {
+      $set: {
+        verified: true,
+      },
+    };
+    const result = await usersCollection.updateOne(filter, updatedDoc, options);
+    res.send(result);
+  } catch (error) {
+    console.log(error.message.bold);
+  }
+});
+
 //* -------------------------DELETE(DELETE)-------------------------
 // delete a seller product
 app.delete('/seller/products/:id', async (req, res) => {
