@@ -318,7 +318,7 @@ app.put('/products/verify/:email', async (req, res) => {
         verified: true,
       },
     };
-    const result = await productsCollection.updateOne(
+    const result = await productsCollection.updateMany(
       filter,
       updatedDoc,
       options
