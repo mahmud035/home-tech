@@ -178,6 +178,21 @@ app.get('/reporteditems', async (req, res) => {
   }
 });
 
+// JWT Token {create JWT Token}
+app.get('/jwt', async (req, res) => {
+  const email = req.query.email;
+  const query = { email: email };
+  const user = await usersCollection.findOne(query);
+
+  // if the user is found in the database than {create/assign a JWT Token}
+  if (user) {
+    const token = jwt.sign({ email }, process.env.ACCESS_TOKEN_SECRET);
+    return res.send({ accessToken2: token });
+  }
+
+  res.status(403).send({ accessToken2: '' });
+});
+
 //* -------------------------POST(CREATE)-------------------------
 // Save registered user information in the database
 app.post('/users', async (req, res) => {
