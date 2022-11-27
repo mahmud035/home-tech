@@ -13,6 +13,27 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+//* verify jwt token (1st Middleware function)
+const verifyJWT = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).send({ message: 'Unauthorized Access' });
+  }
+
+  try {
+    const token = authHeader.split(' ')[1];
+    const user = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+    req.user = user;
+
+    // IMP: Must call the next() function
+    next();
+  } catch (error) {
+    res.status(401).send({ message: 'Forbidden Access' });
+  }
+};
+
 app.get('/', (req, res) => {
   res.send('HomeTech server is running');
 });
@@ -82,9 +103,15 @@ app.get('/users/:email', async (req, res) => {
 });
 
 // get all orders of a specific user using his/her Email address
-app.get('/orders', async (req, res) => {
+app.get('/orders', verifyJWT, async (req, res) => {
   try {
-    const email = req.query.email;
+    const email = req.query.email; // query kore pathano email
+    const userEmail = req.user.email; // verified user email (jwt token er vitore je email thake sei email ta.)
+
+    if (email !== userEmail) {
+      return res.status(403).send({ message: 'Forbidden Access' });
+    }
+
     const query = { userEmail: email };
     const orders = await bookingsCollection.find(query).toArray();
     res.send(orders);
@@ -146,7 +173,7 @@ app.get('/advertiseitems', async (req, res) => {
 });
 
 // get all buyers
-app.get('/buyers', async (req, res) => {
+app.get('/buyers', verifyJWT, async (req, res) => {
   try {
     const query = { role: 'User' };
     const result = await usersCollection.find(query).toArray();
@@ -272,7 +299,7 @@ app.put('/users/seller/:email', async (req, res) => {
 });
 
 // advertise a specific product
-app.put('/seller/products/:id', async (req, res) => {
+app.put('/seller/products/:id', verifyJWT, async (req, res) => {
   try {
     const id = req.params.id;
     const filter = { _id: ObjectId(id) };
