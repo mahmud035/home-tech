@@ -205,6 +205,18 @@ app.get('/reporteditems', async (req, res) => {
   }
 });
 
+// get a specific order / product for Payment from bookingCollection
+app.get('/products/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const query = { _id: ObjectId(id) };
+    const product = await bookingsCollection.findOne(query);
+    res.send(product);
+  } catch (error) {
+    console.log(error.message.bold);
+  }
+});
+
 // JWT Token {create JWT Token for Email/Password sign-up and login}
 app.get('/jwt', async (req, res) => {
   const email = req.query.email;
