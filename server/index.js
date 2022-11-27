@@ -44,9 +44,6 @@ const productCategoriesCollection = client
 const productsCollection = client.db('homeTechDB').collection('products');
 const usersCollection = client.db('homeTechDB').collection('users');
 const bookingsCollection = client.db('homeTechDB').collection('bookings');
-const sellerProductsCollection = client
-  .db('homeTechDB')
-  .collection('sellerProducts');
 
 //* -------------------------GET(READ)-------------------------
 // get all categories
@@ -121,13 +118,13 @@ app.get('/users/seller/:email', async (req, res) => {
 });
 
 // get specific Seller All Products
-app.get('/seller/products', async (req, res) => {
+app.get('/products/seller', async (req, res) => {
   try {
     const email = req.query.email;
     const query = {
       email: email,
     };
-    const products = await sellerProductsCollection.find(query).toArray();
+    const products = await productsCollection.find(query).toArray();
     res.send(products);
   } catch (error) {
     console.log(error.message.bold);
@@ -141,7 +138,7 @@ app.get('/advertiseitems', async (req, res) => {
       isAdvertise: true,
       salesStatus: 'available',
     };
-    const result = await sellerProductsCollection.find(query).toArray();
+    const result = await productsCollection.find(query).toArray();
     res.send(result);
   } catch (error) {
     console.log(error.message.bold);
@@ -221,10 +218,10 @@ app.post('/bookings', async (req, res) => {
 });
 
 // Insert Seller Product
-app.post('/seller/products', async (req, res) => {
+app.post('/products', async (req, res) => {
   try {
     const product = req.body;
-    const result = await sellerProductsCollection.insertOne(product);
+    const result = await productsCollection.insertOne(product);
     res.send(result);
   } catch (error) {
     console.log(error.message.name);
@@ -259,7 +256,7 @@ app.put('/seller/products/:id', async (req, res) => {
         isAdvertise: true,
       },
     };
-    const result = await sellerProductsCollection.updateOne(
+    const result = await productsCollection.updateOne(
       filter,
       updatedDoc,
       options
@@ -270,7 +267,7 @@ app.put('/seller/products/:id', async (req, res) => {
   }
 });
 
-// reported product
+// report a specific product
 app.put('/products/:id', async (req, res) => {
   try {
     const id = req.params.id;
@@ -312,11 +309,11 @@ app.put('/sellers/:id', async (req, res) => {
 
 //* -------------------------DELETE(DELETE)-------------------------
 // delete a seller product
-app.delete('/seller/products/:id', async (req, res) => {
+app.delete('/products/:id', async (req, res) => {
   try {
     const id = req.params.id;
     const query = { _id: ObjectId(id) };
-    const result = await sellerProductsCollection.deleteOne(query);
+    const result = await productsCollection.deleteOne(query);
     res.send(result);
   } catch (error) {
     console.log(error.message.bold);
