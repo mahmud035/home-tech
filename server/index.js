@@ -58,10 +58,10 @@ app.get('/categories', async (req, res) => {
 });
 
 // Get specific category products
-app.get('/categories/:id', async (req, res) => {
+app.get('/categories/:categoryname', async (req, res) => {
   try {
-    const id = req.params.id;
-    const query = { categoryId: Number(id) };
+    const categoryName = req.params.categoryname;
+    const query = { categoryName: categoryName };
     const result = await productsCollection.find(query).toArray();
     res.send(result);
   } catch (error) {
@@ -301,6 +301,28 @@ app.put('/sellers/:id', async (req, res) => {
       },
     };
     const result = await usersCollection.updateOne(filter, updatedDoc, options);
+    res.send(result);
+  } catch (error) {
+    console.log(error.message.bold);
+  }
+});
+
+// update Seller verify status in the productsCollection
+app.put('/products/verify/:email', async (req, res) => {
+  try {
+    const email = req.params.email;
+    const filter = { email: email };
+    const options = { upsert: true };
+    const updatedDoc = {
+      $set: {
+        verified: true,
+      },
+    };
+    const result = await productsCollection.updateOne(
+      filter,
+      updatedDoc,
+      options
+    );
     res.send(result);
   } catch (error) {
     console.log(error.message.bold);
