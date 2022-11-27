@@ -84,7 +84,10 @@ app.get('/categories', async (req, res) => {
 app.get('/categories/:categoryname', async (req, res) => {
   try {
     const categoryName = req.params.categoryname;
-    const query = { categoryName: categoryName };
+    const query = {
+      categoryName: categoryName,
+      salesStatus: 'available',
+    };
     const result = await productsCollection.find(query).toArray();
     res.send(result);
   } catch (error) {
@@ -429,6 +432,29 @@ app.put('/products/verify/:email', async (req, res) => {
       updatedDoc,
       options
     );
+    res.send(result);
+  } catch (error) {
+    console.log(error.message.bold);
+  }
+});
+
+// update products salesStatus (available / or) in the productCollections
+app.put('/products/salesstatus/:name', async (req, res) => {
+  try {
+    const productName = req.params.name;
+    const filter = { name: productName };
+    const options = { upsert: true };
+    const updatedDoc = {
+      $set: {
+        salesStatus: 'sold',
+      },
+    };
+    const result = await productsCollection.updateMany(
+      filter,
+      updatedDoc,
+      options
+    );
+
     res.send(result);
   } catch (error) {
     console.log(error.message.bold);
