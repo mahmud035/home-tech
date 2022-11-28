@@ -86,11 +86,12 @@ app.get('/categories/:categoryname', async (req, res) => {
     const categoryName = req.params.categoryname;
     const query = {
       categoryName: categoryName,
-      // salesStatus: 'available',
-      //BUG pore ei line theke comment remove korte hobe.
+      salesStatus: 'available',
     };
+    console.log(query);
     const result = await productsCollection.find(query).toArray();
     res.send(result);
+    console.log(result);
   } catch (error) {
     console.log(error.message.bold);
   }
