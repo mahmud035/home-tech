@@ -2,7 +2,7 @@
 
 #### Project Name: HomeTech
 
-#### Live Website: <a href="https://nurturing-minds-client-side.web.app/">HomeTech</a>
+#### Live Website: <a href="https://hometech-be5e9.web.app/">HomeTech</a>
 
 ### Description
 
@@ -47,3 +47,7 @@ HomeTech is an eCommerce website where users can buy and sell second-hand laptop
 ### What I learned
 
 While doing this project gave me a fresh overview of basic react, react-router, react-toasty, Firebase Authentication, Node, Express js, MongoDB and much more. <strong> Specially Mongodb CRUD operation</strong>. Now I have enough understanding about these topics and I am confident about it.
+
+#### adminEmail: mahmud@gmail.com
+
+#### adminPassword: 12@asd
