@@ -335,6 +335,7 @@ app.post('/payments', async (req, res) => {
     },
   };
   const updateResult = await bookingsCollection.updateOne(filter, updatedDoc);
+  console.log(updateResult);
 
   res.send(result);
 });
