@@ -1,52 +1,64 @@
-## Welcome! 👋
+## HomeTech — Server
 
-#### Project Name: HomeTech
+#### Project Name: HomeTech (server)
 
 #### Live Website: <a href="https://hometech-be5e9.web.app/">HomeTech</a>
 
+> This is the **server** half of the HomeTech monorepo. The React client lives in [`../client`](../client). Full project write-up: [root README](../README.md).
+
 ### Description
 
-HomeTech is an eCommerce website where users can buy and sell second-hand laptops.
+The HomeTech API is a single Express service backed by MongoDB Atlas. It exposes REST routes for product categories, products, users, bookings, and payments, issues JWTs for backend authorization, and integrates Stripe payment-intents.
 
-### Features and Functionality
+### Collections
 
-<ul>
-<li>Users can browse top-brand laptops under various categories and book their preferred laptops.</li>
-<li>Users can pay for their products through Stripe.</li>
-<li> A user can convert his account to a seller account if he wants and can add and delete his products from that account. </li> 
-<li> Users can sign up with their email, password, Google account, or Github account.</li>
-<li> Admin can control all buyers and all sellers. Admin can verify the seller. Also can delete buyer and seller. </li>
-<li>The seller can advertise any of his products.</li>
-</ul>
+- `productCategories` — laptop categories
+- `products` — listings (with `salesStatus`, `isAdvertise`, `reported`, `verified`)
+- `users` — accounts with a `role` of `User` / `Seller` / `Admin`
+- `bookings` — buyer bookings (marked `paid` after settlement)
+- `payments` — recorded Stripe transactions
+
+### Payment flow
+
+1. `POST /create-payment-intent` → returns a Stripe `clientSecret` (amount computed server-side).
+2. Client confirms the card with Stripe Elements.
+3. `POST /payments` → records the payment and updates the booking with `paid: true` and `transactionId`.
+
+### Auth
+
+`verifyJWT` validates the `Authorization: Bearer <token>` header and, on user-scoped reads, compares the token's email claim to the requested email (403 on mismatch).
+
+> Note: auth gating is not yet applied uniformly — several mutating and admin routes are currently public. See *Known limitations* in the [root README](../README.md).
 
 ### Built with
 
-- React v18
-- React Router v6
-- React / TanStack Query
-- React Hook Form
-- Firebase Authentication
-- Node
-- Express Js
-- MongoDB
-- JWT
-- Stripe (Payment)
-- Axios
-- React Bootstrap
-- Mobile-first workflow
+- Node.js, Express 4.18
+- MongoDB native driver 4.12 (MongoDB Atlas)
+- jsonwebtoken 9 (JWT)
+- Stripe 11
+- cors, dotenv, colors
 
-### What I did
+### Run the server
 
-<ul>
-<li>Use React, React Router for build the project </li>
-<li> Use Firebase Authentication for client side authentication</li>
-<li> Use Node, Express, MongoDB for server side </li>
-<li> Create interactive UI </li>
-</ul>
+```bash
+git clone https://github.com/mahmud035/home-tech.git
+cd home-tech/server
+npm install
+npm run start-dev        # nodemon, http://localhost:5000
+```
 
-### What I learned
+**Environment (`.env`):**
 
-While doing this project gave me a fresh overview of basic react, react-router, react-toasty, Firebase Authentication, Node, Express js, MongoDB and much more. <strong> Specially Mongodb CRUD operation</strong>. Now I have enough understanding about these topics and I am confident about it.
+```
+DB_USER=...
+DB_PASSWORD=...
+ACCESS_TOKEN_SECRET=...
+STRIPE_SECRET_KEY=...
+```
+
+### Test admin account
+
+For reviewing the deployed site:
 
 #### adminEmail: mahmud@gmail.com
 

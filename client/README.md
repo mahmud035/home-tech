@@ -1,53 +1,54 @@
 ## Welcome! 👋
 
-#### Project Name: HomeTech
+#### Project Name: HomeTech (client)
 
 #### Live Website: <a href="https://hometech-be5e9.web.app/">HomeTech</a>
 
+> This is the **client** half of the HomeTech monorepo. The Express + MongoDB API lives in [`../server`](../server). Full project write-up: [root README](../README.md).
+
 ### Description
 
-HomeTech is an eCommerce website where users can buy and sell second-hand laptops.
+HomeTech is a MERN marketplace for buying and selling second-hand laptops, with buyer, seller, and admin roles. Personal learning project — no real transactions or users.
 
 ### Features and Functionality
 
 <ul>
-<li>Users can browse top-brand laptops under various categories and book their preferred laptops.</li>
-<li>Users can pay for their products through Stripe.</li>
-<li> A user can convert his account to a seller account if he wants and can add and delete his products from that account. </li> 
-<li> Users can sign up with their email, password, Google account, or Github account.</li>
-<li> Admin can control all buyers and all sellers. Admin can verify the seller. Also can delete buyer and seller. </li>
-<li>The seller can advertise any of his products.</li>
+<li>Browse top-brand laptops by category and book a product.</li>
+<li>Pay for a booked product through Stripe.</li>
+<li>Convert a buyer account to a seller account, then add / delete listings.</li>
+<li>Sign up / sign in with email &amp; password, Google, or GitHub (Firebase Authentication).</li>
+<li>Admin: verify sellers, moderate reported items, and remove buyers or sellers.</li>
+<li>Sellers can advertise their products.</li>
 </ul>
 
 ### Built with
 
 - React v18
 - React Router v6
-- React / TanStack Query
+- TanStack Query (server state)
 - React Hook Form
 - Firebase Authentication
-- Node
-- Express Js
-- MongoDB
-- JWT
-- Stripe (Payment)
+- JWT (backend session)
+- Stripe (@stripe/react-stripe-js)
 - Axios
-- React Bootstrap
+- React-Bootstrap
 - Mobile-first workflow
 
-### What I did
+### Run the client
 
-<ul>
-<li>Use React, React Router for build the project </li>
-<li> Use Firebase Authentication for client side authentication</li>
-<li> Use Node, Express, MongoDB for server side </li>
-<li> Create interactive UI </li>
-</ul>
+```bash
+git clone https://github.com/mahmud035/home-tech.git
+cd home-tech/client
+npm install
+npm start            # http://localhost:3000
+```
 
-### What I learned
-
-While doing this project gave me a fresh overview of basic react, react-router, react-toasty, Firebase Authentication, Node, Express js, MongoDB and much more. <strong> Specially Mongodb CRUD operation</strong>. Now I have enough understanding about these topics and I am confident about it.
+Provide your own Firebase web config in `src/firebase configuration/firebase.config.js`.
 
 #### adminEmail: mahmud@gmail.com
 
 #### adminPassword: 12@asd
+
+### What I learned
+
+This project gave me hands-on experience with role-based UI, Firebase Authentication, a JWT-secured backend, MongoDB CRUD, and integrating Stripe card payments from a React client.
